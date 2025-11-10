@@ -1,0 +1,61 @@
+.header {
+  border: 2px solid #000;
+  flex-direction: row;
+  justify-content: space-between;
+  display: flex;
+}
+
+.logo {
+  width: 100px;
+  padding: 10px;
+}
+
+.nav-items {
+  list-style-type: none;
+  display: flex;
+}
+
+.nav-items > ul {
+  font-size: 25px;
+  list-style-type: none;
+  display: flex;
+}
+
+.nav-items > ul > li {
+  margin: 10px;
+  padding: 10px;
+}
+
+.res-card {
+  background-color: #f0f0f0;
+  border-radius: 14px;
+  width: 200px;
+  margin: 10px;
+  padding: 5px;
+}
+
+.res-card:hover {
+  cursor: pointer;
+  border: 1.5px solid #000;
+}
+
+.res-container {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.search {
+  padding: 8px;
+}
+
+.logo-img {
+  width: 100%;
+}
+
+.card-list {
+  flex-direction: row;
+  margin: 1px;
+  padding: 1px;
+  display: flex;
+}
+/*# sourceMappingURL=swiggyClone.9e4c6fd2.css.map */
