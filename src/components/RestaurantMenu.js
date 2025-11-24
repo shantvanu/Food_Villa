@@ -1,0 +1,92 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Shimmer from "./Shimmer";
+
+const RestaurantMenu = () => {
+  const [resInfo, setResInfo] = useState(null);
+  const [openIndex, setOpenIndex] = useState(null);
+  const { resID } = useParams();
+
+  const fetchMenu = async () => {
+    const data = await fetch(
+      `https://namastedev.com/api/v1/listRestaurantMenu/${encodeURIComponent(
+        resID
+      )}`
+    );
+
+    const jsonData = await data.json();
+    // console.log("menu");
+    // console.log(jsonData);
+    setResInfo(jsonData.data);
+  };
+
+  useEffect(() => {
+    fetchMenu();
+  }, [resID]);
+
+  // console.log("hello");
+
+  const handleToggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  if (resInfo === null) return <Shimmer />;
+
+  const { name, cuisines, costForTwo } = resInfo.cards[2].card.card.info;
+  // first we iterate over the different types of categories and then we iterate for fetching the menu items from that particular category.
+  const regularCards =
+    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards || [];
+
+  const categoryCards = regularCards.filter((c) => {
+    return c && Object.keys(c).length > 0 && c?.card && c?.card?.card;
+  });
+
+  console.log(categoryCards);
+  // .card.card.itemCards[i].card.info.name;
+  return (
+    <div className="menu">
+      <div className="restaurant-header">
+        <h1 className="restaurant-name">{name}</h1>
+        <p className="restaurant-meta">
+          {cuisines.join(", ")} - {costForTwo}
+        </p>
+      </div>
+      <h2 className="section-title">Menu</h2>
+
+      {categoryCards.map((c, catIndex) => {
+        const title = c.card.card.title;
+        const itemsArray = c.card.card.itemCards;
+
+        return (
+          <div key={catIndex} className="categories">
+            <div className="cat-btn">
+              <button type="button" onClick={() => handleToggle(catIndex)}>
+                {" "}
+                <span className="cat-title">{title}</span>
+                <span className="cat-arrow">
+                  {openIndex === catIndex ? "↑" : "↓"}
+                </span>
+              </button>
+            </div>
+
+            {openIndex === catIndex &&
+              itemsArray.map((items, index) => {
+                return (
+                  <div key={items.card.info.id} className="item">
+                    <ul>
+                      <li>{items.card.info.name}</li>
+                      <li>{items.card.info.description}</li>
+                      <li>{items.card.info.price / 100}</li>
+                      {/* <img src={items.card.info.imageId} alt="image " /> */}
+                    </ul>
+                  </div>
+                );
+              })}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default RestaurantMenu;

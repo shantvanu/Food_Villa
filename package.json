@@ -2,10 +2,9 @@
   "name": "swiggyclone",
   "version": "1.0.0",
   "description": "Swiggy Clone built using React and Parcel",
-  
   "scripts": {
     "start": "parcel index.html",
-    "build":"parcel build index.html",
+    "build": "parcel build index.html",
     "test": "jest"
   },
   "repository": {
@@ -20,9 +19,12 @@
   "homepage": "https://github.com/shantvanu/Swiggy_clone#readme",
   "dependencies": {
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-router": "^7.9.6",
+    "react-router-dom": "^7.9.6"
   },
   "devDependencies": {
+    "@parcel/config-default": "^2.16.1",
     "parcel": "^2.16.1"
   }
 }
