@@ -8,6 +8,7 @@ const Body = () => {
   const [listOfRestaurant, setListOfRestaurant] = useState([]);
   const [filteredfRestaurant, setFilteredRestaurant] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [mode, setMode] = useState("all");
 
   useEffect(() => {
     fetchData();
@@ -46,6 +47,34 @@ const Body = () => {
   };
   //whenever local state variable updates, React triggers reconciliation cycle
 
+  function toggleVeg() {
+    const x = mode === "veg" ? "all" : "veg";
+
+    if (x === "veg") {
+      const searchRestaurant = listOfRestaurant.filter((res) => {
+        return res?.info?.veg === true;
+      });
+      setFilteredRestaurant(searchRestaurant);
+    } else {
+      setFilteredRestaurant(listOfRestaurant);
+    }
+    setMode(x);
+  }
+
+  function toggleNonVeg() {
+    const x = mode === "nonveg" ? "all" : "nonveg";
+
+    if (x === "nonveg") {
+      const searchRestaurant = listOfRestaurant.filter((res) => {
+        return res?.info?.veg === false;
+      });
+      setFilteredRestaurant(searchRestaurant);
+    } else {
+      setFilteredRestaurant(listOfRestaurant);
+    }
+    setMode(x);
+  }
+
   const onlineStatus = useOnlineStatus();
 
   if (onlineStatus === false) return <h1> Looks Like You Are offline.... </h1>;
@@ -83,6 +112,20 @@ const Body = () => {
           >
             {" "}
             Top Rated Restaurants
+          </button>
+        </div>
+
+        <div className="veg">
+          <button className="veg-btn" onClick={toggleVeg}>
+            {" "}
+            veg
+          </button>
+        </div>
+
+        <div className="non-veg">
+          <button className="non-veg-btn" onClick={toggleNonVeg}>
+            {" "}
+            non-veg
           </button>
         </div>
       </div>
