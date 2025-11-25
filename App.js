@@ -1,12 +1,13 @@
-import React from "react";
+import React,{lazy,Suspense} from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./src/components/Header";
 import Body from "./src/components/Body";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import About from "./src/components/About";
+// import About from "./src/components/About";
 import Contact from "./src/components/Contact";
 import Error from "./src/components/Error";
 import Cart from "./src/components/Cart";
+import Shimmer from "./src/components/Shimmer";
 import RestaurantMenu from "./src/components/RestaurantMenu";
 
 const AppLayout = () => {
@@ -17,6 +18,9 @@ const AppLayout = () => {
     </div>
   );
 };
+
+//lazy loading or ondemand loading, loads the componwnt only when it is called not in advance have diff js file then the main one...
+const About= lazy(()=> import("./src/components/About"));
 
 const appRouter = createBrowserRouter([
   {
@@ -30,7 +34,7 @@ const appRouter = createBrowserRouter([
 
       {
         path: "/about",
-        element: <About />,
+        element: <Suspense fallback={<Shimmer />}> <About /> </Suspense>,
       },
 
       {

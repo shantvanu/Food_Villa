@@ -1,29 +1,14 @@
-import { useState, useEffect } from "react";
+import useRestaurantMenu from "../utils/useRestaurantMenu";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Shimmer from "./Shimmer";
 
 const RestaurantMenu = () => {
-  const [resInfo, setResInfo] = useState(null);
   const [openIndex, setOpenIndex] = useState(null);
   const { resID } = useParams();
 
-  const fetchMenu = async () => {
-    const data = await fetch(
-      `https://namastedev.com/api/v1/listRestaurantMenu/${encodeURIComponent(
-        resID
-      )}`
-    );
-
-    const jsonData = await data.json();
-    // console.log("menu");
-    // console.log(jsonData);
-    setResInfo(jsonData.data);
-  };
-
-  useEffect(() => {
-    fetchMenu();
-  }, [resID]);
-
+  const resInfo = useRestaurantMenu(resID);
+  console.log(resInfo);
   // console.log("hello");
 
   const handleToggle = (index) => {
@@ -77,7 +62,6 @@ const RestaurantMenu = () => {
                       <li>{items.card.info.name}</li>
                       <li>{items.card.info.description}</li>
                       <li>{items.card.info.price / 100}</li>
-                      {/* <img src={items.card.info.imageId} alt="image " /> */}
                     </ul>
                   </div>
                 );

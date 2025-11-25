@@ -2,6 +2,7 @@ import RestaurantCard from "./RestaurantCard";
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
   const [listOfRestaurant, setListOfRestaurant] = useState([]);
@@ -11,6 +12,24 @@ const Body = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  function handleOnClick() {
+    const searchRestaurants = listOfRestaurant.filter((res) => {
+      return (
+        res.info.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        res.info.cuisines.some((cuisine) => {
+          return cuisine.toLowerCase().includes(searchText.toLowerCase());
+        })
+      );
+    });
+    setFilteredRestaurant(searchRestaurants);
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      return handleOnClick();
+    }
+  };
 
   const fetchData = async () => {
     const data = await fetch("https://namastedev.com/api/v1/listRestaurants");
@@ -27,6 +46,10 @@ const Body = () => {
   };
   //whenever local state variable updates, React triggers reconciliation cycle
 
+  const onlineStatus = useOnlineStatus();
+
+  if (onlineStatus === false) return <h1> Looks Like You Are offline.... </h1>;
+
   return listOfRestaurant.length === 0 ? (
     <Shimmer />
   ) : (
@@ -37,29 +60,13 @@ const Body = () => {
             type="text"
             className="search-box"
             value={searchText}
+            onKeyDown={handleKeyDown}
             onChange={(e) => {
               setSearchText(e.target.value);
             }}
           />
 
-          <button
-            className="search-btn"
-            onClick={() => {
-              const searchRestaurants = listOfRestaurant.filter((res) => {
-                return (
-                  res.info.name
-                    .toLowerCase()
-                    .includes(searchText.toLowerCase()) ||
-                  res.info.cuisines.some((cuisine) => {
-                    return cuisine
-                      .toLowerCase()
-                      .includes(searchText.toLowerCase());
-                  })
-                );
-              });
-              setFilteredRestaurant(searchRestaurants);
-            }}
-          >
+          <button className="search-btn" onClick={handleOnClick}>
             Search
           </button>
         </div>
