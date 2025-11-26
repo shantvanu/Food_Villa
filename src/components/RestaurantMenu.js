@@ -2,6 +2,7 @@ import useRestaurantMenu from "../utils/useRestaurantMenu";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Shimmer from "./Shimmer";
+import RestaurantCategory from "./RestaurantCategory";
 
 const RestaurantMenu = () => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -26,7 +27,15 @@ const RestaurantMenu = () => {
     return c && Object.keys(c).length > 0 && c?.card && c?.card?.card;
   });
 
+  const categories = regularCards.filter((cat) => {
+    return (
+      cat.card?.card?.["@type"] ===
+      "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+    );
+  });
+
   console.log(categoryCards);
+  console.log(categories, "categories now ");
   // .card.card.itemCards[i].card.info.name;
   return (
     <div className="menu">
@@ -59,9 +68,13 @@ const RestaurantMenu = () => {
                 return (
                   <div key={items.card.info.id} className="item">
                     <ul>
-                      <li>{items.card.info.name}</li>
-                      <li>{items.card.info.description}</li>
-                      <li>{items.card.info.price / 100}</li>
+                      <li>
+                        {items.card.info.name} - {items.card.info.price / 100}
+                      </li>
+                      <span>{items.card.info.description}</span>
+                      <li>
+                        <button>Add+</button>
+                      </li>
                     </ul>
                   </div>
                 );

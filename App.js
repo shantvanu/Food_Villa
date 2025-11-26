@@ -1,4 +1,4 @@
-import React,{lazy,Suspense} from "react";
+import React, { lazy, Suspense, useState } from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./src/components/Header";
 import Body from "./src/components/Body";
@@ -9,18 +9,25 @@ import Error from "./src/components/Error";
 import Cart from "./src/components/Cart";
 import Shimmer from "./src/components/Shimmer";
 import RestaurantMenu from "./src/components/RestaurantMenu";
+import UserContext from "./src/utils/UserContext";
+import { useContext } from "react";
 
 const AppLayout = () => {
+  const { loggedInUser } = useContext(UserContext);
+  const [userName, setUserName] = useState();
+
   return (
     <div className="app">
-      <Header />
-      <Outlet />
+      <UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
+        <Header />
+        <Outlet />
+      </UserContext.Provider>
     </div>
   );
 };
 
 //lazy loading or ondemand loading, loads the componwnt only when it is called not in advance have diff js file then the main one...
-const About= lazy(()=> import("./src/components/About"));
+const About = lazy(() => import("./src/components/About"));
 
 const appRouter = createBrowserRouter([
   {
@@ -34,7 +41,12 @@ const appRouter = createBrowserRouter([
 
       {
         path: "/about",
-        element: <Suspense fallback={<Shimmer />}> <About /> </Suspense>,
+        element: (
+          <Suspense fallback={<Shimmer />}>
+            {" "}
+            <About />{" "}
+          </Suspense>
+        ),
       },
 
       {

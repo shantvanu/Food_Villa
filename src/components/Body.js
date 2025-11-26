@@ -1,14 +1,18 @@
-import RestaurantCard from "./RestaurantCard";
+import RestaurantCard, { WithLabel } from "./RestaurantCard";
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import { useContext } from "react";
+import UserContext from "../utils/UserContext";
 
 const Body = () => {
   const [listOfRestaurant, setListOfRestaurant] = useState([]);
-  const [filteredfRestaurant, setFilteredRestaurant] = useState([]);
+  const [filteredRestaurant, setFilteredRestaurant] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [mode, setMode] = useState("all");
+
+  const PromotedRestaurantCard = WithLabel(RestaurantCard);
 
   useEffect(() => {
     fetchData();
@@ -75,6 +79,8 @@ const Body = () => {
     setMode(x);
   }
 
+  const { loggedInUser, setUserName } = useContext(UserContext);
+
   const onlineStatus = useOnlineStatus();
 
   if (onlineStatus === false) return <h1> Looks Like You Are offline.... </h1>;
@@ -98,6 +104,15 @@ const Body = () => {
           <button className="search-btn" onClick={handleOnClick}>
             Search
           </button>
+        </div>
+
+        <div>
+          <label>User Name :</label>
+          <input
+            type="text"
+            value={loggedInUser}
+            onChange={(e) => setUserName(e.target.value)}
+          />
         </div>
 
         <div className="filter">
@@ -131,21 +146,38 @@ const Body = () => {
       </div>
 
       <div className="res-container">
-        {filteredfRestaurant.map((restaurant) => {
+        {filteredRestaurant.map((restaurant) => {
           return (
             <Link
               key={restaurant.info.id}
               to={"/restaurants/" + restaurant.info.id}
             >
-              <RestaurantCard
-                key={restaurant.info.id}
-                resName={restaurant.info.name}
-                imageId={restaurant.info.cloudinaryImageId}
-                address={restaurant.info.areaName}
-                cuisine={restaurant.info.cuisines}
-                rating={restaurant.info.avgRating}
-                deliveryTime={restaurant.info.sla.slaString}
-              />
+              {Number(
+                restaurant.info.totalRatingsString.slice(
+                  0,
+                  restaurant.info.totalRatingsString.indexOf("K")
+                )
+              ) >= 10 ? (
+                <PromotedRestaurantCard
+                  key={restaurant.info.id}
+                  resName={restaurant.info.name}
+                  imageId={restaurant.info.cloudinaryImageId}
+                  address={restaurant.info.areaName}
+                  cuisine={restaurant.info.cuisines}
+                  rating={restaurant.info.avgRating}
+                  deliveryTime={restaurant.info.sla.slaString}
+                />
+              ) : (
+                <RestaurantCard
+                  key={restaurant.info.id}
+                  resName={restaurant.info.name}
+                  imageId={restaurant.info.cloudinaryImageId}
+                  address={restaurant.info.areaName}
+                  cuisine={restaurant.info.cuisines}
+                  rating={restaurant.info.avgRating}
+                  deliveryTime={restaurant.info.sla.slaString}
+                />
+              )}
             </Link>
           );
         })}
