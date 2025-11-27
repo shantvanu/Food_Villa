@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Shimmer from "./Shimmer";
 import RestaurantCategory from "./RestaurantCategory";
+import ItemList from "./ItemList";
 
 const RestaurantMenu = () => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -63,22 +64,7 @@ const RestaurantMenu = () => {
               </button>
             </div>
 
-            {openIndex === catIndex &&
-              itemsArray.map((items, index) => {
-                return (
-                  <div key={items.card.info.id} className="item">
-                    <ul>
-                      <li>
-                        {items.card.info.name} - {items.card.info.price / 100}
-                      </li>
-                      <span>{items.card.info.description}</span>
-                      <li>
-                        <button>Add+</button>
-                      </li>
-                    </ul>
-                  </div>
-                );
-              })}
+            {openIndex === catIndex && <ItemList itemsArray={itemsArray} />}
           </div>
         );
       })}

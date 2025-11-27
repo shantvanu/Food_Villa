@@ -11,6 +11,8 @@ import Shimmer from "./src/components/Shimmer";
 import RestaurantMenu from "./src/components/RestaurantMenu";
 import UserContext from "./src/utils/UserContext";
 import { useContext } from "react";
+import { Provider } from "react-redux";
+import appStore from "./src/store/appStore";
 
 const AppLayout = () => {
   const { loggedInUser } = useContext(UserContext);
@@ -18,10 +20,12 @@ const AppLayout = () => {
 
   return (
     <div className="app">
-      <UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
-        <Header />
-        <Outlet />
-      </UserContext.Provider>
+      <Provider store={appStore}>
+        <UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
+          <Header />
+          <Outlet />
+        </UserContext.Provider>
+      </Provider>
     </div>
   );
 };
